@@ -7,40 +7,41 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Noto+Sans+SC:wght@500;600&display=swap" rel="stylesheet">
   <style>
-    body {font-family:'Poppins','Noto Sans SC',sans-serif;margin:0;color:#1e293b;background:linear-gradient(180deg,#f9fafb 0%,#e5e7eb 50%,#f9fafb 100%);display:flex;flex-direction:column;min-height:100vh;}
+    body {font-family:'Poppins','Noto Sans SC',sans-serif;margin:0;color:#1e293b;background:linear-gradient(180deg,#f9fafb 0%,#e5e7eb 50%,#f9fafb 100%);}
     header {text-align:center;padding:40px 0 10px;color:#111827;font-size:2.5rem;font-weight:700;letter-spacing:.4px;}
-    .main {flex:1;display:grid;grid-template-columns:50% 50%;gap:0;position:relative;padding:30px 60px;}
-    .divider {position:absolute;left:50%;top:5%;bottom:5%;width:1px;background:linear-gradient(to bottom,transparent,#d1d5db 50%,transparent);}
-    .left,.right {background:transparent;padding:20px 40px;overflow-y:auto;}
+    #questionPage, #resultPage {max-width:900px;margin:0 auto;padding:20px;}
     h2 {color:#2563eb;font-size:1.25rem;margin-top:24px;padding-bottom:6px;border-bottom:2px solid #e5e7eb;font-weight:600;}
     h2 span.weight {color:#6b7280;font-size:.9rem;margin-left:6px;font-weight:400;}
     select,input[type='number'] {width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:1rem;margin-top:6px;background:#fff;transition:all .3s ease;}
     select:hover,input[type='number']:hover {border-color:#3b82f6;box-shadow:0 0 8px rgba(59,130,246,.15);}
+    .submit-container, .back-container {text-align:center;margin:40px 0;}
+    button {padding:10px 24px;font-size:1.1rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:background .3s;}
+    #submitBtn {color:#fff;background:#2563eb;}
+    #submitBtn:hover {background:#1d4ed8;}
+    #backBtn {color:#2563eb;background:white;border:1px solid #2563eb;}
+    #backBtn:hover {background:#2563eb;color:white;}
     .score-display {text-align:center;margin-bottom:20px;}
-    .score-display h2 {margin:0;font-size:3.5rem;transition:color .3s,transform .3s;font-weight:700;}
-    .score-display p {color:#475569;margin:10px 0 0;opacity:0;transition:opacity .8s;font-size:1.2rem;font-weight:500;}
-    .score-display.show p {opacity:1;}
-    canvas {max-width:100%;margin-top:30px;animation:fadeIn 1.2s ease;}
-    .actions {text-align:center;margin-top:10px;}
-    #resetAll {display:inline-block;padding:8px 16px;border:1px solid #2563eb;border-radius:6px;background:white;color:#2563eb;font-weight:600;cursor:pointer;transition:all .25s ease;}
-    #resetAll:hover {background:#2563eb;color:white;}
+    .score-display h2 {margin:0;font-size:3.5rem;transition:color .3s;}
+    .score-display p {color:#475569;margin:10px 0 0;font-size:1.2rem;}
+    canvas {max-width:100%;margin-top:30px;}
     footer {text-align:center;padding:20px;font-size:.9rem;color:#6b7280;border-top:1px solid #e5e7eb;background:#f9fafb;}
-    @keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+    #note {text-align:center;margin-top:15px;color:#6b7280;font-size:0.9rem;line-height:1.6;max-width:700px;margin-left:auto;margin-right:auto;}
   </style>
 </head>
 <body>
   <header>Career Self-Assessment 职业自我评估</header>
-  <div class="main">
-    <div class="divider"></div>
-    <div class="left" id="questionContainer"></div>
-    <div class="right">
-      <div class="score-display" id="scoreDisplay">
-        <h2 id="overallScore">0</h2>
-        <p id="suggestion"></p>
-      </div>
-      <canvas id="radarChart" height="400"></canvas>
-      <div class="actions"><button id="resetAll">Reset</button></div>
+  <div id="questionPage">
+    <div id="questionContainer"></div>
+    <div class="submit-container"><button id="submitBtn">Submit</button></div>
+  </div>
+  <div id="resultPage" style="display:none;">
+    <div class="score-display">
+      <h2 id="overallScore">0</h2>
+      <p id="suggestion"></p>
     </div>
+    <canvas id="radarChart" height="400"></canvas>
+    <p id="note">该评估仅适用于自我认识，分数不构成职业建议。更多的是希望大家能对自己的事业现状有更清楚的认识和思考，尽量不受社会环境塑造的 social figures 的影响去搞明白自己的人生想要什么，现在是否走在正确的方向上。</p>
+    <div class="back-container"><button id="backBtn">← Back</button></div>
   </div>
   <footer>© 2025 F_annnnnn</footer>
   <script>
@@ -53,12 +54,12 @@
         {key:'fulfillment',cn:'个人认同',en:'Personal Satisfaction',weight:0.2}
       ],
       questions:[
-        {text:'当前是否负债？（伴随着逐利成本增加，职业价值会随负债水平提高而升高）',dimension:'financial',weight:0.2,options:['无负债(0)','有负债，但具备充足本金偿还（1）','5年内有负债计划或有生育计划（4）','有高额负债（5）'],scores:[0,1,4,5]},
+        {text:'当前是否负债？',dimension:'financial',weight:0.2,options:['无负债(0)','有负债，但具备充足本金偿还（1）','5年内有负债计划或有生育计划（4）','有高额负债（5）'],scores:[0,1,4,5]},
         {text:'扣除生活必需成本后当前个人薪水需多少年可以购买当地约50m²的房屋？',dimension:'financial',weight:0.8,type:'number'},
         {text:'平均每周工作+通勤所需总时长',dimension:'balance',weight:0.8,type:'number'},
         {text:'年带薪休假(PTO)天数',dimension:'balance',weight:0.2,type:'number'},
-        {text:'继续从事当前工作是否能够提升你的专业竞争力或对解决身份问题有帮助？',dimension:'growth',weight:0.8,options:['当前工作对履历或身份转换有明确提升（5）','继续当前工作对履历有一定程度提升，或对身份转换有帮助（3）','初期工作经历对履历有提升但继续工作无增量(1)','提升有限或几乎无帮助（0）'],scores:[5,3,1,0]},
-        {text:'该工作是否具备长期发展潜力（如上升通道明确或当前热门行业）？',dimension:'growth',weight:0.2,options:['从事当前热门行业（5）','有明确成长空间（4）','还需更多投入证明自己的核心竞争力（2）','无明显前景（0）'],scores:[5,4,2,0]},
+        {text:'继续从事当前工作是否能够提升你的专业竞争力？',dimension:'growth',weight:0.6,options:['当前工作对履历有明确提升（5）','对履历有一定程度提升，但多为增量无质变（3）','工作经历对履历有提升但继续工作无增量(1)','提升有限几乎无帮助（0）'],scores:[5,3,1,0]},
+        {text:'该工作是否具备长期发展潜力（如上升通道明确或当前热门行业）？',dimension:'growth',weight:0.4,options:['从事当前热门行业（5）','有明确成长空间（4）','需证明自己的核心竞争力（2）','无明显前景（0）'],scores:[5,4,2,0]},
         {text:'认为当前生活状态（不考虑可持续性）是否幸福？',dimension:'fulfillment',weight:0.8,options:['希望能够维持现状或认为在正确的方向上（5）','总体在正确的道路上，有一定改善空间（4）','可以接受（2）','希望改变（0）'],scores:[5,4,2,0]},
         {text:'是否认可当前的工作类型？',dimension:'fulfillment',weight:0.2,options:['认为在做有意义的事（5）','总体来讲是想从事的工作种类（4）','无感（2）','当前工作类型不适合（0）'],scores:[5,4,2,0]},
         {text:'公司文化与工作压力水平',dimension:'environment',weight:0.8,options:['开放/包容认同感强，工作压力较小（5）','公司文化不认同但工作压力程度可接受（4）','公司文化良好，但工作Workload较大（2）','公司文化造成竞争激烈或形式主义，工作压力巨大（0）'],scores:[5,4,2,0]},
@@ -93,110 +94,53 @@
       container.appendChild(section);
     });
 
-    function scoreYearsToBuy(v){v=Math.min(50,Math.max(1,v));if(v<=0)return 5;if(v>=30)return 0;return 5-((v-10)/(30-1))*5;}
+    function scoreYearsToBuy(v){v=Math.min(50,Math.max(1,v));if(v<=10)return 5;if(v>=30)return 0;return 5-((v-10)/(30-10))*5;}
     function scoreWorkCommute(v){v=Math.min(80,Math.max(0,v));if(v<=44)return 5;if(v>=60)return 0;return 5-((v-44)/(60-44))*5;}
 
     function getScoreValue(input,q){
       if(q.type==='number'){
-        const raw=input.value;
-        if(raw==='') return NaN;
-        const val=Number(raw);
-        if(isNaN(val)) return NaN;
+        const raw=input.value;if(raw==='') return NaN;const val=Number(raw);if(isNaN(val)) return NaN;
         if(q.text.includes('房屋')) return scoreYearsToBuy(val);
         if(q.text.includes('时长')) return scoreWorkCommute(val);
-        if(q.text.includes('休假')){
-          const v=Math.min(365,Math.max(0,val));
-          if(v>=17) return 5;
-          if(v<=5) return 0;
-          return ((v-5)/(17-5))*5;
-        }
+        if(q.text.includes('休假')){const v=Math.min(365,Math.max(0,val));if(v>=17) return 5;if(v<=5) return 0;return((v-5)/(17-5))*5;}
         return NaN;
       }
       return input.value===''?NaN:Number(input.value);
     }
 
-    document.addEventListener('input',e=>{if(e.target.matches('select,input[type="number"]')) updateScores();});
-
-    function updateScores(){
-      const dimQs=CONFIG.dimensions.reduce((m,d)=>{m[d.key]=CONFIG.questions.filter(q=>q.dimension===d.key);return m;},{});
-      const weightedSum={}, answeredWeight={}, totalWeight={};
-      CONFIG.dimensions.forEach(d=>{weightedSum[d.key]=0;answeredWeight[d.key]=0;totalWeight[d.key]=0;});
-
+    function calcScores(){
+      const weightedSum={},answeredWeight={};CONFIG.dimensions.forEach(d=>{weightedSum[d.key]=0;answeredWeight[d.key]=0;});
       document.querySelectorAll('select,input[type="number"]').forEach(el=>{
-        const dim=el.dataset.dimension; const qText=el.dataset.question; const q=CONFIG.questions.find(x=>x.text===qText);
+        const dim=el.dataset.dimension;const q=CONFIG.questions.find(x=>x.text===el.dataset.question);
         const val=getScoreValue(el,q);
-        totalWeight[dim]+=q.weight;
-        if(!isNaN(val)){
-          weightedSum[dim]+=val*q.weight;
-          answeredWeight[dim]+=q.weight;
-        }
+        if(!isNaN(val)){weightedSum[dim]+=val*q.weight;answeredWeight[dim]+=q.weight;}
       });
-
-      const averages={};
-      CONFIG.dimensions.forEach(d=>{
-        averages[d.key]=answeredWeight[d.key]>0?weightedSum[d.key]/answeredWeight[d.key]:0;
-      });
-
-      radarChart.data.datasets[0].data=CONFIG.dimensions.map(d=>averages[d.key]);
-      radarChart.update();
-      animateScore(calcOverall(averages));
+      const averages={};CONFIG.dimensions.forEach(d=>{averages[d.key]=answeredWeight[d.key]>0?weightedSum[d.key]/answeredWeight[d.key]:0;});
+      let total=0,totalWeight=0;CONFIG.dimensions.forEach(d=>{total+=averages[d.key]*20*d.weight;totalWeight+=d.weight;});
+      const overall=totalWeight?(total/totalWeight)*1.08:0;return{averages,overall};
     }
 
-    function calcOverall(averages){
-      let total=0,totalWeight=0;
-      CONFIG.dimensions.forEach(d=>{total+=averages[d.key]*20*d.weight;totalWeight+=d.weight;});
-      return totalWeight?(total/totalWeight)*1.08:0;
-    }
-
-    function animateScore(target){
-      const scoreEl=document.getElementById('overallScore');
-      const suggestion=document.getElementById('suggestion');
-      const current=parseFloat(scoreEl.textContent)||0;
-      const step=(target-current)/20;
-      let frame=0;
-      const allFilled=Array.from(document.querySelectorAll('select,input[type="number"]')).every(s=>s.value!==''&&s.value!==undefined);
-      const timer=setInterval(()=>{
-        frame++;
-        const v=current+step*frame;
-        scoreEl.textContent=v.toFixed(0);
-        if(frame>=20){
-          clearInterval(timer);
-          scoreEl.textContent=target.toFixed(0);
-          if(!allFilled){
-            suggestion.innerHTML='请完成所有问题后查看结果';
-            suggestion.style.opacity='0.8';
-            return;
-          }
-          suggestion.style.opacity='1';
-          if(target>=85){scoreEl.style.color='#16a34a';suggestion.innerHTML='🌟 恭喜！达到了令人羡慕的平衡！';}
-          else if(target>=70){scoreEl.style.color='#0ea5e9';suggestion.innerHTML='😊 状态良好，你知道自己要什么。';}
-          else if(target>=60){scoreEl.style.color='#f59e0b';suggestion.innerHTML='🙂 理性！付出与回报成比例！';}
-          else{scoreEl.style.color='#dc2626';suggestion.innerHTML='⚠️ 想想工作到底为何？';}
-          document.getElementById('scoreDisplay').classList.add('show');
-        }
-      },30);
-    }
-
-    function getPointLabelSize(){
-      const w=document.querySelector('.right').clientWidth||window.innerWidth;
-      const dpr=window.devicePixelRatio||1;
-      return Math.max(12,Math.min(22,Math.round(w/45*(dpr>=2?1.1:1))));
-    }
-
-    const ctx=document.getElementById('radarChart');
-    const radarChart=new Chart(ctx,{type:'radar',data:{labels:CONFIG.dimensions.map(d=>`${d.cn}\n${d.en}`),datasets:[{data:[0,0,0,0,0],fill:true,backgroundColor:'rgba(59,130,246,0.25)',borderColor:'rgba(37,99,235,0.9)',pointBackgroundColor:'rgba(37,99,235,1)'}]},options:{scales:{r:{min:0,max:5,ticks:{display:false},grid:{circular:false,color:'#cbd5e1'},angleLines:{color:'#cbd5e1'},pointLabels:{font:{size:getPointLabelSize()},callback:(label)=>String(label).split('\n')}}},plugins:{legend:{display:false}},animation:{duration:800,easing:'easeOutQuart'}}});
-
-    let resizeTimer=null;
-    window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{radarChart.options.scales.r.pointLabels.font.size=getPointLabelSize();radarChart.update();},120);});
-
-    document.getElementById('resetAll').addEventListener('click',()=>{
-      document.querySelectorAll('select,input[type="number"]').forEach(s=>s.value='');
-      radarChart.data.datasets[0].data=[0,0,0,0,0];
-      radarChart.update();
-      document.getElementById('overallScore').textContent='0';
-      document.getElementById('suggestion').textContent='';
-      document.getElementById('scoreDisplay').classList.remove('show');
+    document.getElementById('submitBtn').addEventListener('click',()=>{
+      const {averages,overall}=calcScores();
+      document.getElementById('questionPage').style.display='none';
+      document.getElementById('resultPage').style.display='block';
+      showResult(overall,averages);
     });
+
+    document.getElementById('backBtn').addEventListener('click',()=>{
+      document.getElementById('questionPage').style.display='block';
+      document.getElementById('resultPage').style.display='none';
+    });
+
+    function showResult(score,averages){
+      const s=document.getElementById('overallScore');const sug=document.getElementById('suggestion');s.textContent=score.toFixed(0);
+      if(score>=85){s.style.color='#16a34a';sug.innerHTML='🌟 真令人羡慕！你的职业现状非常健康。';}
+      else if(score>=70){s.style.color='#0ea5e9';sug.innerHTML='😊 状态良好，继续保持并关注长期成长。';}
+      else if(score>=60){s.style.color='#f59e0b';sug.innerHTML='🙂 基本满足，但仍有优化空间。';}
+      else{s.style.color='#dc2626';sug.innerHTML='⚠️ 应认真考虑调整职业方向或生活方式。';}
+      const ctx=document.getElementById('radarChart');
+      new Chart(ctx,{type:'radar',data:{labels:CONFIG.dimensions.map(d=>`${d.cn}\n${d.en}`),datasets:[{data:CONFIG.dimensions.map(d=>averages[d.key]),fill:true,backgroundColor:'rgba(59,130,246,0.25)',borderColor:'rgba(37,99,235,0.9)',pointBackgroundColor:'rgba(37,99,235,1)'}]},options:{scales:{r:{min:0,max:5,ticks:{display:false},grid:{circular:false,color:'#cbd5e1'},angleLines:{color:'#cbd5e1'},pointLabels:{font:{size:14},callback:(label)=>String(label).split('\n')}}},plugins:{legend:{display:false}}}});
+    }
   </script>
 </body>
 </html>
