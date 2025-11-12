@@ -7,25 +7,25 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Noto+Sans+SC:wght@500;600&display=swap" rel="stylesheet">
   <style>
-    body {font-family:'Poppins','Noto Sans SC',sans-serif;margin:0;color:#1e293b;background:linear-gradient(180deg,#f9fafb 0%,#e5e7eb 50%,#f9fafb 100%);}
-    header {text-align:center;padding:40px 0 10px;color:#111827;font-size:2.5rem;font-weight:700;letter-spacing:.4px;}
-    #questionPage, #resultPage {max-width:900px;margin:0 auto;padding:20px;}
-    h2 {color:#2563eb;font-size:1.25rem;margin-top:24px;padding-bottom:6px;border-bottom:2px solid #e5e7eb;font-weight:600;}
-    h2 span.weight {color:#6b7280;font-size:.9rem;margin-left:6px;font-weight:400;}
-    select,input[type='number'] {width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:1rem;margin-top:6px;background:#fff;transition:all .3s ease;}
-    select:hover,input[type='number']:hover {border-color:#3b82f6;box-shadow:0 0 8px rgba(59,130,246,.15);}
-    .submit-container, .back-container {text-align:center;margin:40px 0;}
-    button {padding:10px 24px;font-size:1.1rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:background .3s;}
-    #submitBtn {color:#fff;background:#2563eb;}
-    #submitBtn:hover {background:#1d4ed8;}
-    #backBtn {color:#2563eb;background:white;border:1px solid #2563eb;}
-    #backBtn:hover {background:#2563eb;color:white;}
-    .score-display {text-align:center;margin-bottom:20px;}
-    .score-display h2 {margin:0;font-size:3.5rem;transition:color .3s;}
-    .score-display p {color:#475569;margin:10px 0 0;font-size:1.2rem;}
-    canvas {max-width:100%;margin-top:30px;}
-    footer {text-align:center;padding:20px;font-size:.9rem;color:#6b7280;border-top:1px solid #e5e7eb;background:#f9fafb;}
-    #note {text-align:center;margin-top:15px;color:#6b7280;font-size:0.9rem;line-height:1.6;max-width:700px;margin-left:auto;margin-right:auto;}
+    body {font-family:'Poppins','Noto Sans SC',sans-serif;margin:0;color:#1e293b;background:linear-gradient(180deg,#f9fafb 0%,#e5e7eb 50%,#f9fafb 100%);} 
+    header {text-align:center;padding:40px 0 10px;color:#111827;font-size:2.5rem;font-weight:700;letter-spacing:.4px;} 
+    #questionPage, #resultPage {max-width:900px;margin:0 auto;padding:20px;} 
+    h2 {color:#2563eb;font-size:1.25rem;margin-top:24px;padding-bottom:6px;border-bottom:2px solid #e5e7eb;font-weight:600;} 
+    h2 span.weight {color:#6b7280;font-size:.9rem;margin-left:6px;font-weight:400;} 
+    select,input[type='number'] {width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:1rem;margin-top:6px;background:#fff;transition:all .3s ease;} 
+    select:hover,input[type='number']:hover {border-color:#3b82f6;box-shadow:0 0 8px rgba(59,130,246,.15);} 
+    .submit-container, .back-container {text-align:center;margin:40px 0;} 
+    button {padding:10px 24px;font-size:1.1rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:background .3s;} 
+    #submitBtn {color:#fff;background:#2563eb;} 
+    #submitBtn:hover {background:#1d4ed8;} 
+    #backBtn {color:#2563eb;background:white;border:1px solid #2563eb;} 
+    #backBtn:hover {background:#2563eb;color:white;} 
+    .score-display {text-align:center;margin-bottom:20px;} 
+    .score-display h2 {margin:0;font-size:3.5rem;transition:color .3s;} 
+    .score-display p {color:#475569;margin:10px 0 0;font-size:1.2rem;} 
+    canvas {max-width:100%;margin-top:30px;} 
+    footer {text-align:center;padding:20px;font-size:.9rem;color:#6b7280;border-top:1px solid #e5e7eb;background:#f9fafb;} 
+    #note {text-align:center;margin-top:15px;color:#6b7280;font-size:0.9rem;line-height:1.6;max-width:700px;margin-left:auto;margin-right:auto;} 
   </style>
 </head>
 <body>
@@ -45,25 +45,28 @@
   </div>
   <footer>© 2025 F_annnnnn</footer>
   <script>
+    let radarChartInstance = null;
+
     const CONFIG={
       dimensions:[
-        {key:'financial',cn:'经济安全',en:'Financial Stability',weight:0.3},
+        {key:'financial',cn:'财务目的一致性',en:'Financial Alignment',weight:0.3},
         {key:'environment',cn:'工作环境',en:'Workplace Environment',weight:0.15},
         {key:'growth',cn:'职业成长性',en:'Career Development',weight:0.2},
         {key:'balance',cn:'生活平衡',en:'Work-Life Balance',weight:0.15},
         {key:'fulfillment',cn:'个人认同',en:'Personal Satisfaction',weight:0.2}
       ],
       questions:[
-        {text:'当前是否负债？',dimension:'financial',weight:0.2,options:['无负债(0)','有负债，但具备充足本金偿还（1）','5年内有负债计划或有生育计划（4）','有高额负债（5）'],scores:[0,1,4,5]},
-        {text:'扣除生活必需成本后当前个人薪水需多少年可以购买当地约50m²的房屋？',dimension:'financial',weight:0.8,type:'number'},
+        {text:'你是否有明确的中长期财务支出计划（如购房、生育等），并在为此做准备？',dimension:'financial',weight:0.25,options:['暂未有相关计划（0）','有模糊目标，但暂未行动（2）','有5年内明确目标并已开始储蓄或计划（4）','已进入执行阶段（如房贷/育儿计划进行中）（5）'],scores:[0,2,4,5]},
+        {text:'你的当前负债或支出压力状况如何？',dimension:'financial',weight:0.25,options:['高负债且存在偿付压力（0）','负债较高或偶尔有现金流压力（2）','负债适中且有还款计划（4）','无负债或可轻松偿还（5）'],scores:[0,2,4,5]},
+        {text:'扣除生活必需成本后当前个人薪水需多少年可以购买当地约50m²的房屋？',dimension:'financial',weight:0.5,type:'number'},
         {text:'平均每周工作+通勤所需总时长',dimension:'balance',weight:0.8,type:'number'},
         {text:'年带薪休假(PTO)天数',dimension:'balance',weight:0.2,type:'number'},
-        {text:'继续从事当前工作是否能够提升你的专业竞争力？',dimension:'growth',weight:0.6,options:['当前工作对履历有明确提升（5）','对履历有一定程度提升，但多为增量无质变（3）','工作经历对履历有提升但继续工作无增量(1)','提升有限几乎无帮助（0）'],scores:[5,3,1,0]},
-        {text:'该工作是否具备长期发展潜力（如上升通道明确或当前热门行业）？',dimension:'growth',weight:0.4,options:['从事当前热门行业（5）','有明确成长空间（4）','需证明自己的核心竞争力（2）','无明显前景（0）'],scores:[5,4,2,0]},
-        {text:'认为当前生活状态（不考虑可持续性）是否幸福？',dimension:'fulfillment',weight:0.8,options:['希望能够维持现状或认为在正确的方向上（5）','总体在正确的道路上，有一定改善空间（4）','可以接受（2）','希望改变（0）'],scores:[5,4,2,0]},
+        {text:'继续从事当前工作是否能够提升你的专业竞争力？',dimension:'growth',weight:0.7,options:['当前工作对履历有明确提升（5）','对履历有一定程度提升，但多为增量无质变（3）','工作经历对履历有提升但继续工作无增量(1)','提升有限几乎无帮助（0）'],scores:[5,3,1,0]},
+        {text:'该工作是否具备长期发展潜力（如上升通道明确或当前热门行业）？',dimension:'growth',weight:0.3,options:['从事当前热门行业（5）','有明确成长空间（4）','需证明自己的核心竞争力（2）','无明显前景（0）'],scores:[5,4,2,0]},
+        {text:'认为当前生活状态（不考虑可持续性）是否幸福？',dimension:'fulfillment',weight:0.7,options:['希望能够维持现状或认为在正确的方向上（5）','总体在正确的道路上，有一定改善空间（4）','可以接受（2）','希望改变（0）'],scores:[5,4,2,0]},
         {text:'是否认可当前的工作类型？',dimension:'fulfillment',weight:0.2,options:['认为在做有意义的事（5）','总体来讲是想从事的工作种类（4）','无感（2）','当前工作类型不适合（0）'],scores:[5,4,2,0]},
-        {text:'公司文化与工作压力水平',dimension:'environment',weight:0.8,options:['开放/包容认同感强，工作压力较小（5）','公司文化不认同但工作压力程度可接受（4）','公司文化良好，但工作Workload较大（2）','公司文化造成竞争激烈或形式主义，工作压力巨大（0）'],scores:[5,4,2,0]},
-        {text:'工作裁员风险',dimension:'environment',weight:0.2,options:['收入来源稳定，无裁员风险（5）','处于下行期，后期逐渐面临裁员变动风险（4）','中年危机(3)','末位淘汰制等高裁员风险（0）'],scores:[5,4,3,0]}
+        {text:'公司文化与工作压力水平',dimension:'environment',weight:0.7,options:['开放/包容认同感强，工作压力较小（5）','公司文化不认同但工作压力程度可接受（4）','公司文化良好，但工作Workload较大（2）','公司文化造成竞争激烈或形式主义，工作压力巨大（0）'],scores:[5,4,2,0]},
+        {text:'工作裁员风险',dimension:'environment',weight:0.3,options:['收入来源稳定，无裁员风险（5）','处于下行期，后期逐渐面临裁员变动风险（4）','中年危机(3)','末位淘汰制等高裁员风险（0）'],scores:[5,4,3,0]}
       ]
     };
 
@@ -77,6 +80,7 @@
         if(q.type==='number'){
           input=document.createElement('input');
           input.type='number';
+          input.step='1';
           if(q.text.includes('房屋')){input.min=1;input.max=50;input.placeholder='输入1-50之间的年份';}
           else if(q.text.includes('时长')){input.min=0;input.max=80;input.placeholder='输入0-80小时';}
           else if(q.text.includes('休假')){input.min=0;input.max=365;input.placeholder='输入0-365天';}
@@ -99,25 +103,29 @@
 
     function getScoreValue(input,q){
       if(q.type==='number'){
-        const raw=input.value;if(raw==='') return NaN;const val=Number(raw);if(isNaN(val)) return NaN;
+        const raw=input.value; if(raw==='') return NaN; const val=Number(raw); if(isNaN(val)) return NaN;
         if(q.text.includes('房屋')) return scoreYearsToBuy(val);
         if(q.text.includes('时长')) return scoreWorkCommute(val);
-        if(q.text.includes('休假')){const v=Math.min(365,Math.max(0,val));if(v>=17) return 5;if(v<=5) return 0;return((v-5)/(17-5))*5;}
+        if(q.text.includes('休假')){const v=Math.min(365,Math.max(0,val)); if(v>=17) return 5; if(v<=5) return 0; return ((v-5)/(17-5))*5;}
         return NaN;
       }
       return input.value===''?NaN:Number(input.value);
     }
 
     function calcScores(){
-      const weightedSum={},answeredWeight={};CONFIG.dimensions.forEach(d=>{weightedSum[d.key]=0;answeredWeight[d.key]=0;});
+      const weightedSum={},answeredWeight={};
+      CONFIG.dimensions.forEach(d=>{weightedSum[d.key]=0;answeredWeight[d.key]=0;});
       document.querySelectorAll('select,input[type="number"]').forEach(el=>{
-        const dim=el.dataset.dimension;const q=CONFIG.questions.find(x=>x.text===el.dataset.question);
+        const dim=el.dataset.dimension; const q=CONFIG.questions.find(x=>x.text===el.dataset.question);
         const val=getScoreValue(el,q);
-        if(!isNaN(val)){weightedSum[dim]+=val*q.weight;answeredWeight[dim]+=q.weight;}
+        if(!isNaN(val)){weightedSum[dim]+=val*q.weight; answeredWeight[dim]+=q.weight;}
       });
-      const averages={};CONFIG.dimensions.forEach(d=>{averages[d.key]=answeredWeight[d.key]>0?weightedSum[d.key]/answeredWeight[d.key]:0;});
-      let total=0,totalWeight=0;CONFIG.dimensions.forEach(d=>{total+=averages[d.key]*20*d.weight;totalWeight+=d.weight;});
-      const overall=totalWeight?(total/totalWeight)*1.08:0;return{averages,overall};
+      const averages={};
+      CONFIG.dimensions.forEach(d=>{averages[d.key]=answeredWeight[d.key]>0?weightedSum[d.key]/answeredWeight[d.key]:0;});
+      let total=0,totalWeight=0;
+      CONFIG.dimensions.forEach(d=>{total+=averages[d.key]*20*d.weight; totalWeight+=d.weight;});
+      const overall=totalWeight?(total/totalWeight)*1.08:0;
+      return {averages,overall};
     }
 
     document.getElementById('submitBtn').addEventListener('click',()=>{
@@ -133,13 +141,22 @@
     });
 
     function showResult(score,averages){
-      const s=document.getElementById('overallScore');const sug=document.getElementById('suggestion');s.textContent=score.toFixed(0);
-      if(score>=85){s.style.color='#16a34a';sug.innerHTML='🌟 真令人羡慕！你的职业现状非常健康。';}
-      else if(score>=70){s.style.color='#0ea5e9';sug.innerHTML='😊 状态良好，继续保持并关注长期成长。';}
-      else if(score>=60){s.style.color='#f59e0b';sug.innerHTML='🙂 基本满足，但仍有优化空间。';}
-      else{s.style.color='#dc2626';sug.innerHTML='⚠️ 应认真考虑调整职业方向或生活方式。';}
-      const ctx=document.getElementById('radarChart');
-      new Chart(ctx,{type:'radar',data:{labels:CONFIG.dimensions.map(d=>`${d.cn}\n${d.en}`),datasets:[{data:CONFIG.dimensions.map(d=>averages[d.key]),fill:true,backgroundColor:'rgba(59,130,246,0.25)',borderColor:'rgba(37,99,235,0.9)',pointBackgroundColor:'rgba(37,99,235,1)'}]},options:{scales:{r:{min:0,max:5,ticks:{display:false},grid:{circular:false,color:'#cbd5e1'},angleLines:{color:'#cbd5e1'},pointLabels:{font:{size:14},callback:(label)=>String(label).split('\n')}}},plugins:{legend:{display:false}}}});
+      const s=document.getElementById('overallScore'); const sug=document.getElementById('suggestion'); s.textContent=score.toFixed(0);
+      if(score>=85){s.style.color='#16a34a';sug.innerHTML='🌟 你似乎在一条与自我认同极为一致的道路上，真令人羡慕！当前的状态让你感到踏实或充实。请珍惜这种平衡，同时警惕惯性：继续保持探索心，让成长与热爱并行。';}
+      else if(score>=70){s.style.color='#0ea5e9';sug.innerHTML='😊 真不错！你当前的工作处于一种期待未来的状态。只是也许仍有一部分内心未被满足。试着思考：如果一切条件不变，五年后的你是否仍愿意留在相同的轨迹？';}
+      else if(score>=60){s.style.color='#f59e0b';sug.innerHTML='🙂 状态良好，刚好可以实现个人内心的平衡但也伴随着一定代价的付出。或许值得问：工作到底是为了什么？';}
+      else{s.style.color='#dc2626';sug.innerHTML='⚠️ 你的工作状态似乎与你的理想或内在价值存在明显偏差。也许你已经感受到疲惫、困顿或失衡。这并不意味着失败，而是一个信号——提醒你重新思考“我真正想要的生活是什么”';}
+
+      const ctx=document.getElementById('radarChart').getContext('2d');
+      if(radarChartInstance){radarChartInstance.destroy();}
+      radarChartInstance=new Chart(ctx,{
+        type:'radar',
+        data:{labels:CONFIG.dimensions.map(d=>`${d.cn}\n${d.en}`),datasets:[{data:CONFIG.dimensions.map(d=>averages[d.key]),fill:true,backgroundColor:'rgba(59,130,246,0.25)',borderColor:'rgba(37,99,235,0.9)',pointBackgroundColor:'rgba(37,99,235,1)'}]},
+        options:{
+          scales:{r:{min:0,max:5,ticks:{display:false},grid:{circular:false,color:'#cbd5e1'},angleLines:{color:'#cbd5e1'},pointLabels:{font:{size:14},callback:(label)=>String(label).split('\n')}}},
+          plugins:{legend:{display:false}}
+        }
+      });
     }
   </script>
 </body>
