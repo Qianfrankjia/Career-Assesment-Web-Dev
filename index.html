@@ -31,6 +31,7 @@
 <body>
   <header>Career Self-Assessment 职业自我评估</header>
   <div id="questionPage">
+    <p style="text-align:center;color:#94a3b8;font-size:0.85rem;margin-bottom:10px;font-style:italic;opacity:0.7;">Disclaimer:该页面仅包含前端计算，没有信息被收集</p>
     <div id="questionContainer"></div>
     <div class="submit-container"><button id="submitBtn">Submit</button></div>
   </div>
@@ -40,7 +41,7 @@
       <p id="suggestion"></p>
     </div>
     <canvas id="radarChart" height="400"></canvas>
-    <p id="note">该评估仅适用于自我认识，分数不构成职业建议。更多的是希望大家能对自己的事业现状有更清楚的认识和思考，尽量不受社会环境塑造的 social figures 的影响去搞明白自己的人生想要什么，现在是否走在正确的方向上。</p>
+    <p id="note">该评估仅适用于自我认识，分数不构成职业建议。希望作为正处当打之年的年轻一代的大家能对当前的事业现状有更清楚的认识和思考，避免受到社会环境塑造的 social figures 的影响，更清楚的了解自己作为个体想要的，以及现在是否在为自我目标达成而前行。</p>
     <div class="back-container"><button id="backBtn">← Back</button></div>
   </div>
   <footer>© 2025 F_annnnnn</footer>
@@ -58,15 +59,19 @@
       questions:[
         {text:'你是否有明确的中长期财务支出计划（如购房、生育等），并在为此做准备？',dimension:'financial',weight:0.25,options:['暂未有相关计划（0）','有模糊目标，但暂未行动（2）','有5年内明确目标并已开始储蓄或计划（4）','已进入执行阶段（如房贷/育儿计划进行中）（5）'],scores:[0,2,4,5]},
         {text:'你的当前负债或支出压力状况如何？',dimension:'financial',weight:0.25,options:['高负债且存在偿付压力（0）','负债较高或偶尔有现金流压力（2）','负债适中且有还款计划（4）','无负债或可轻松偿还（5）'],scores:[0,2,4,5]},
-        {text:'扣除生活必需成本后当前个人薪水需多少年可以购买当地目标居住环境的约50m²的房屋？',dimension:'financial',weight:0.5,type:'number'},
+        {text:'扣除生活必需成本后当前个人薪水需多少年可以购买当地理想居住环境的约50m²的房屋？',dimension:'financial',weight:0.5,type:'number'},
+        
         {text:'平均每周工作+通勤所需总时长',dimension:'balance',weight:0.8,type:'number'},
         {text:'年带薪休假(PTO)天数',dimension:'balance',weight:0.2,type:'number'},
-        {text:'继续从事当前工作是否能够提升你的专业竞争力？',dimension:'growth',weight:0.7,options:['当前工作对履历有明确提升（5）','对履历有一定程度提升，但多为增量无质变（3）','工作经历对履历有提升但继续工作无增量(1)','提升有限几乎无帮助（0）'],scores:[5,3,1,0]},
-        {text:'该工作是否具备长期发展潜力（如上升通道明确或当前热门行业）？',dimension:'growth',weight:0.3,options:['从事当前热门行业（5）','有明确成长空间（4）','需证明自己的核心竞争力（2）','无明显前景（0）'],scores:[5,4,2,0]},
-        {text:'认为当前生活状态（不考虑可持续性）是否幸福？',dimension:'fulfillment',weight:0.7,options:['希望能够维持现状或认为在正确的方向上（5）','总体在正确的道路上，有一定改善空间（4）','可以接受（2）','希望改变（0）'],scores:[5,4,2,0]},
-        {text:'是否认可当前的工作类型？',dimension:'fulfillment',weight:0.2,options:['认为在做有意义的事（5）','总体来讲是想从事的工作种类（4）','无感（2）','当前工作类型不适合（0）'],scores:[5,4,2,0]},
+        
+        {text:'继续从事当前工作是否能够提升你的专业竞争力？',dimension:'growth',weight:0.7,options:['当前工作对履历或身份解决有明确提升（5）','对履历或身份解决有一定程度帮助，但多为增量无质变（3）','工作经历对履历或身份解决有提升但继续工作无增量(1)','提升有限或几乎无帮助（0）'],scores:[5,3,1,0]},
+        {text:'该工作是否具备长期发展潜力（如上升通道明确或当前热门行业）？',dimension:'growth',weight:0.3,options:['从事当前热门行业或晋升路径明确（5）','有明确成长空间（4）','需付出更多以证明自己的核心竞争力（2）','无明显前景（0）'],scores:[5,4,2,0]},
+        
+        {text:'认为当前生活状态（不需考虑可持续性）是否幸福？',dimension:'fulfillment',weight:0.7,options:['希望能够维持现状或认为在正确的方向上（5）','总体在正确的道路上，有一定改善空间（4）','可以接受（2）','希望改变（0）'],scores:[5,4,2,0]},
+        {text:'是否认可当前的工作类型？',dimension:'fulfillment',weight:0.3,options:['认为在做有意义的事（5）','总体来讲是想从事的工作种类（4）','无感（2）','当前工作类型不适合（0）'],scores:[5,4,2,0]},
+        
         {text:'公司文化与工作压力水平',dimension:'environment',weight:0.7,options:['开放/包容认同感强，工作压力较小（5）','公司文化不认同但工作压力程度可接受（4）','公司文化良好，但工作Workload较大（2）','公司文化造成竞争激烈或形式主义，工作压力巨大（0）'],scores:[5,4,2,0]},
-        {text:'工作裁员风险',dimension:'environment',weight:0.3,options:['收入来源稳定，无裁员风险（5）','处于下行期，后期逐渐面临裁员变动风险（4）','中年危机(3)','末位淘汰制等高裁员风险（0）'],scores:[5,4,3,0]}
+        {text:'公司裁员风险',dimension:'environment',weight:0.3,options:['收入来源稳定，无裁员风险（5）','处于下行期，后期将逐渐面临裁员变动风险（4）','未来将面临中年危机或非升即走(2)','末位淘汰制等高裁员风险（0）'],scores:[5,4,2,0]}
       ]
     };
 
@@ -144,8 +149,8 @@
       const s=document.getElementById('overallScore'); const sug=document.getElementById('suggestion'); s.textContent=score.toFixed(0);
       if(score>=85){s.style.color='#16a34a';sug.innerHTML='🌟 你似乎在一条与自我认同极为一致的道路上，真令人羡慕！当前的状态让你感到踏实或充实。请珍惜这种平衡，同时警惕惯性：继续保持探索心，让成长与热爱并行。';}
       else if(score>=70){s.style.color='#0ea5e9';sug.innerHTML='😊 真不错！你当前的工作处于一种期待未来的状态。只是也许仍有一部分内心未被满足。试着思考：如果一切条件不变，五年后的你是否仍愿意留在相同的轨迹？';}
-      else if(score>=60){s.style.color='#f59e0b';sug.innerHTML='🙂 状态良好，刚好可以实现个人内心的平衡但也伴随着一定代价的付出。或许值得问：工作到底是为了什么？';}
-      else{s.style.color='#dc2626';sug.innerHTML='⚠️ 你的工作状态似乎与你的理想或内在价值存在明显偏差。也许你已经感受到疲惫、困顿或失衡。这并不意味着失败，而是一个信号——提醒你重新思考“我真正想要的生活是什么”';}
+      else if(score>=60){s.style.color='#f59e0b';sug.innerHTML='🙂 状态良好，刚好可以实现个人内心的平衡但也伴随着一定代价的付出。或许值得问：通过当下，未来到底要实现的是什么？';}
+      else{s.style.color='#dc2626';sug.innerHTML='⚠️ 你的工作状态似乎与你的理想或内在价值存在明显偏差。也许你已经感受到疲惫、迷失或困惑。这并不意味着失败，而是一个信号——提醒你重新思考：我真正想要的是什么？这样下去是否南辕北辙';}
 
       const ctx=document.getElementById('radarChart').getContext('2d');
       if(radarChartInstance){radarChartInstance.destroy();}
