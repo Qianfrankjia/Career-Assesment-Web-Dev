@@ -25,7 +25,7 @@
     .score-display p {color:#475569;margin:10px 0 0;font-size:1.2rem;} 
     canvas {max-width:100%;margin-top:30px;} 
     footer {text-align:center;padding:20px;font-size:.9rem;color:#6b7280;border-top:10px solid #e5e7eb;background:#f9fafb;} 
-    #note {text-align:center;margin-top:15px;color:#6b7280;font-size:0.9rem;line-height:1.6;max-width:700px;margin-left:auto;margin-right:auto;} 
+    #note {text-align:center;margin-top:15px;color:#9ca3af;font-size:0.9rem;line-height:1.6;max-width:700px;margin-left:auto;margin-right:auto;} 
   </style>
 </head>
 <body>
@@ -41,7 +41,7 @@
       <p id="suggestion"></p>
     </div>
     <canvas id="radarChart" height="400"></canvas>
-    <p id="note">该评估仅适用于自我认识，分数不构成职业建议。希望作为正处当打之年的大家能对当前的现状有更清楚的认识和思考，避免受到社会环境塑造的 social figures 的影响，更清楚的了解自己作为个体想要的，以及现在是否在为自我目标达成而前行。</p>
+    <p id="note" style="color:#a1a1aa;">该评估仅适用于自我认识，分数不构成职业建议。希望作为正处当打之年的大家能对当前的现状有更清楚的认识和思考，避免受到社会环境塑造的 social figures 的影响，更清楚的了解自己作为个体想要的，以及现在是否在为自我目标达成而前行。</p>
     <div class="back-container"><button id="backBtn">← Back</button></div>
   </div>
   <footer>© 2025 qianfrankjia@gmail.com</footer>
@@ -137,6 +137,7 @@
       const {averages,overall}=calcScores();
       document.getElementById('questionPage').style.display='none';
       document.getElementById('resultPage').style.display='block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       showResult(overall,averages);
     });
 
